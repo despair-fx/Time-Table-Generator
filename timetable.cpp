@@ -14,21 +14,16 @@ const int numSlots = 3; // Number of time slots per day
 map<string, string> teacherSubjects = {
     {"Dr. Naveen Tiwari", "Android Programming"},
     {"Mr. Devender Singh", "Programming with .NET C#"},
-    {"Mr. Harshit Pandey", "Optimization Techinques"},
-    {"Mr. Praveen Joshi", "Cryptography"},
-    {"Mr. Janmeyjay Pant", "Soft Computing"},
-    {"Ms. Srijna Karnatak","Career Skills"},
-    {"Dr. Naveen Tiwari", "Android Programming Lab"},
-    {"Mr. Devender Singh", "Programming with .NET C# Lab"}
+    {"Mr. Harshit Pandey", "Optimization Techniques"},
+    {"Mr. Praveen Joshi", "Cryptography"}
+    // Add more subjects and teachers here
 };
 
 // Data structure to represent the schedule
 map<string, map<int, vector<string>>> schedule; // teacher -> day -> slots
 
-// Maximum lectures per week for a teacher
 const int maxLecturesPerWeek = 3;
 
-// Function to check if a teacher exceeds the maximum lectures per week
 bool exceedsMaxLectures(const string &teacher) {
     int count = 0;
     for (int day = 0; day < numDays; day++) {
@@ -41,14 +36,22 @@ bool exceedsMaxLectures(const string &teacher) {
     return count >= maxLecturesPerWeek;
 }
 
-// Function to assign subjects to teachers based on constraints
+void initializeSchedule() {
+    for (const auto &teacherSubjectPair : teacherSubjects) {
+        const string &teacher = teacherSubjectPair.first;
+        for (int day = 0; day < numDays; day++) {
+            schedule[teacher][day] = vector<string>(numSlots, "No Class");
+        }
+    }
+}
+
 void assignSubjects() {
     for (int day = 0; day < numDays; day++) {
         for (int slot = 0; slot < numSlots; slot++) {
             for (const auto &entry : teacherSubjects) {
                 const string &teacher = entry.first;
                 const string &subject = entry.second;
-                
+
                 if (!exceedsMaxLectures(teacher) && schedule[teacher][day][slot] == "No Class") {
                     schedule[teacher][day][slot] = subject;
                 }
@@ -58,18 +61,10 @@ void assignSubjects() {
 }
 
 int main() {
-    // Initialize the random seed
     srand(static_cast<unsigned>(time(0)));
 
     // Initialize the schedule with empty slots
-    for (const auto &entry : teacherSubjects) {
-        const string &teacher = entry.first;
-        for (int day = 0; day < numDays; day++) {
-            for (int slot = 0; slot < numSlots; slot++) {
-                schedule[teacher][day][slot] = "No Class";
-            }
-        }
-    }
+    initializeSchedule();
 
     // Assign subjects to teachers
     assignSubjects();
@@ -79,7 +74,7 @@ int main() {
         const string &teacher = entry.first;
         cout << "Schedule for " << teacher << ":" << endl;
         for (int day = 0; day < numDays; day++) {
-            cout << "Day " << day << ": ";  
+            cout << "Day " << day << ": ";
             for (int slot = 0; slot < numSlots; slot++) {
                 cout << schedule[teacher][day][slot] << " | ";
             }
